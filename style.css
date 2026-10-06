@@ -851,3 +851,141 @@ footer {
         padding: 20px 5%;
     }
 }
+
+.news-image {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: #eaf2fc;
+}
+
+.news-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: .4s;
+}
+
+.news-card:hover .news-image img {
+    transform: scale(1.05);
+}
+
+.news-content a {
+    cursor: pointer;
+}
+
+.detail-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 3000;
+}
+
+.detail-modal.active {
+    display: flex;
+}
+
+.detail-box {
+    width: 100%;
+    max-width: 650px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 16px;
+    position: relative;
+    animation: detailShow .3s ease;
+}
+
+.detail-image {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    display: block;
+}
+
+.detail-body {
+    padding: 30px;
+}
+
+.detail-body small {
+    color: var(--red);
+    font-size: 11px;
+}
+
+.detail-body h2 {
+    color: var(--dark);
+    font-size: 25px;
+    margin: 8px 0 18px;
+}
+
+.detail-body p {
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.8;
+    margin-bottom: 12px;
+}
+
+.detail-body ul {
+    margin: 15px 0;
+    padding-left: 20px;
+    color: var(--text);
+    font-size: 13px;
+    line-height: 2;
+}
+
+.close-detail {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .65);
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 2;
+    transition: .3s;
+}
+
+.close-detail:hover {
+    background: var(--red);
+    transform: rotate(90deg);
+}
+
+@keyframes detailShow {
+    from {
+        opacity: 0;
+        transform: translateY(25px) scale(.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 600px) {
+
+    .detail-modal {
+        padding: 15px;
+    }
+
+    .detail-image {
+        height: 200px;
+    }
+
+    .detail-body {
+        padding: 22px;
+    }
+
+    .detail-body h2 {
+        font-size: 20px;
+    }
+}
