@@ -1,20 +1,22 @@
 const menuBtn = document.getElementById("menuBtn");
 const navMenu = document.getElementById("navMenu");
 
-menuBtn.addEventListener("click", () => {
-    navMenu.classList.toggle("active");
+if (menuBtn && navMenu) {
+    menuBtn.addEventListener("click", () => {
+        navMenu.classList.toggle("active");
 
-    menuBtn.textContent = navMenu.classList.contains("active")
-        ? "✕"
-        : "☰";
-});
-
-document.querySelectorAll("nav a").forEach(link => {
-    link.addEventListener("click", () => {
-        navMenu.classList.remove("active");
-        menuBtn.textContent = "☰";
+        menuBtn.textContent = navMenu.classList.contains("active")
+            ? "✕"
+            : "☰";
     });
-});
+
+    document.querySelectorAll("nav a").forEach(link => {
+        link.addEventListener("click", () => {
+            navMenu.classList.remove("active");
+            menuBtn.textContent = "☰";
+        });
+    });
+}
 
 
 const revealElements = document.querySelectorAll(".reveal");
@@ -28,7 +30,6 @@ function revealOnScroll() {
 }
 
 window.addEventListener("scroll", revealOnScroll);
-
 revealOnScroll();
 
 
@@ -38,18 +39,15 @@ let counterStarted = false;
 function startCounter() {
     const stats = document.querySelector(".stats-section");
 
-    if (!stats) return;
+    if (!stats || counterStarted) return;
 
-    if (
-        stats.getBoundingClientRect().top < window.innerHeight &&
-        !counterStarted
-    ) {
+    if (stats.getBoundingClientRect().top < window.innerHeight) {
         counterStarted = true;
 
         counters.forEach(counter => {
             const target = Number(counter.dataset.target);
             let current = 0;
-            const increment = Math.ceil(target / 60);
+            const increment = Math.max(1, Math.ceil(target / 60));
 
             function updateCounter() {
                 current += increment;
@@ -60,7 +58,6 @@ function startCounter() {
                 }
 
                 counter.textContent = current;
-
                 requestAnimationFrame(updateCounter);
             }
 
@@ -70,23 +67,96 @@ function startCounter() {
 }
 
 window.addEventListener("scroll", startCounter);
+startCounter();
 
 
-const contactForm = document.getElementById("contactForm");
+const detailModal = document.getElementById("detailModal");
+const closeDetail = document.getElementById("closeDetail");
+const detailImage = document.getElementById("detailImage");
+const detailDate = document.getElementById("detailDate");
+const detailTitle = document.getElementById("detailTitle");
+const detailContent = document.getElementById("detailContent");
 
-contactForm.addEventListener("submit", event => {
-    event.preventDefault();
 
-    const nama = document.getElementById("nama").value;
-    const email = document.getElementById("email").value;
-    const pesan = document.getElementById("pesan").value;
+function openDetail(title, content, image = "", date = "") {
+    if (!detailModal) return;
 
-    if (nama === "" || email === "" || pesan === "") {
-        alert("Silakan isi semua data terlebih dahulu.");
-        return;
+    detailTitle.textContent = title;
+    detailContent.innerHTML = content;
+    detailDate.textContent = date;
+
+    if (image) {
+        detailImage.src = image;
+        detailImage.style.display = "block";
+    } else {
+        detailImage.style.display = "none";
     }
 
-    alert("Terima kasih " + nama + "! Pesan berhasil dikirim.");
+    detailModal.classList.add("active");
+    document.body.style.overflow = "hidden";
+}
 
-    contactForm.reset();
+
+document.querySelectorAll(".jurusan-card a").forEach(link => {
+    link.addEventListener("click", event => {
+        event.preventDefault();
+
+        const card = link.closest(".jurusan-card");
+
+        const nama = card.querySelector("h3").textContent;
+        const jurusan = card.querySelector("h4").textContent;
+        const deskripsi = card.querySelector("p").textContent;
+
+        openDetail(
+            nama + " - " + jurusan,
+            "<p>" + deskripsi + "</p>"
+        );
+    });
+});
+
+
+document.querySelectorAll(".news-card a").forEach(link => {
+    link.addEventListener("click", event => {
+        event.preventDefault();
+
+        const card = link.closest(".news-card");
+
+        const image = card.querySelector(".news-image img");
+        const date = card.querySelector("small");
+        const title = card.querySelector("h3");
+        const content = card.querySelector("p");
+
+        openDetail(
+            title ? title.textContent : "",
+            "<p>" + (content ? content.textContent : "") + "</p>",
+            image ? image.src : "",
+            date ? date.textContent : ""
+        );
+    });
+});
+
+
+if (closeDetail) {
+    closeDetail.addEventListener("click", () => {
+        detailModal.classList.remove("active");
+        document.body.style.overflow = "";
+    });
+}
+
+
+if (detailModal) {
+    detailModal.addEventListener("click", event => {
+        if (event.target === detailModal) {
+            detailModal.classList.remove("active");
+            document.body.style.overflow = "";
+        }
+    });
+}
+
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && detailModal) {
+        detailModal.classList.remove("active");
+        document.body.style.overflow = "";
+    }
 });
